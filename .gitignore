@@ -1,0 +1,5 @@
+# standard exclusions
+node_modules/
+
+# builds
+.next/
