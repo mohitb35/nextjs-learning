@@ -14,6 +14,7 @@ function HomePage(props) {
 }
 
 export async function getStaticProps() {
+	console.log('regenerating');
 	const filePath = path.join(process.cwd(), 'data', 'dummy_backend.json');
 	const jsonData = await fs.readFile(filePath);
 
@@ -23,6 +24,7 @@ export async function getStaticProps() {
 		props: {
 			products: data.products,
 		},
+		revalidate: 10, //Specify value in seconds after which the page should be rerendered (ISR)
 	};
 }
 
