@@ -1,14 +1,8 @@
 import fs from 'fs/promises';
-import { useRouter } from 'next/router';
 import path from 'path';
 
 function ProductDetailPage(props) {
 	const { loadedProduct } = props;
-	const router = useRouter();
-
-	/* if (!loadedProduct) {
-		return <p>Loading...</p>;
-	} */
 
 	return (
 		<>
@@ -18,15 +12,18 @@ function ProductDetailPage(props) {
 	);
 }
 
+async function getData() {
+	const filePath = path.join(process.cwd(), 'data', 'dummy_backend.json');
+	const jsonData = await fs.readFile(filePath);
+	return JSON.parse(jsonData);
+}
+
 export async function getStaticProps(context) {
 	const { params } = context;
 
 	const productId = params.pid;
 
-	const filePath = path.join(process.cwd(), 'data', 'dummy_backend.json');
-	const jsonData = await fs.readFile(filePath);
-
-	const data = JSON.parse(jsonData);
+	const data = await getData();
 	const product = data.products.find((product) => product.id === productId);
 
 	return {
@@ -37,8 +34,15 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
+	const data = await getData();
 	return {
-		paths: [{ params: { pid: 'p1' } }],
+		paths: data.products.map((product) => {
+			return {
+				params: {
+					pid: product.id,
+				},
+			};
+		}),
 		fallback: 'blocking',
 	};
 }
