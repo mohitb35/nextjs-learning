@@ -1,8 +1,14 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { useRouter } from 'next/router';
 
 function ProductDetailPage(props) {
 	const { loadedProduct } = props;
+	const router = useRouter();
+
+	if (router.isFallback) {
+		return <p>Loading...</p>;
+	}
 
 	return (
 		<>
