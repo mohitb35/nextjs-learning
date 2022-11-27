@@ -1,8 +1,14 @@
 import fs from 'fs/promises';
+import { useRouter } from 'next/router';
 import path from 'path';
 
 function ProductDetailPage(props) {
 	const { loadedProduct } = props;
+	const router = useRouter();
+
+	if (!loadedProduct) {
+		return <p>Loading...</p>;
+	}
 
 	return (
 		<>
@@ -32,12 +38,8 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
 	return {
-		paths: [
-			{ params: { pid: 'p1' } },
-			{ params: { pid: 'p2' } },
-			{ params: { pid: 'p3' } },
-		],
-		fallback: false,
+		paths: [{ params: { pid: 'p1' } }],
+		fallback: true,
 	};
 }
 
