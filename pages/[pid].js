@@ -6,9 +6,9 @@ function ProductDetailPage(props) {
 	const { loadedProduct } = props;
 	const router = useRouter();
 
-	if (!loadedProduct) {
+	/* if (!loadedProduct) {
 		return <p>Loading...</p>;
-	}
+	} */
 
 	return (
 		<>
@@ -39,7 +39,7 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
 	return {
 		paths: [{ params: { pid: 'p1' } }],
-		fallback: true,
+		fallback: 'blocking',
 	};
 }
 
