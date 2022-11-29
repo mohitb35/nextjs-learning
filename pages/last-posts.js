@@ -1,10 +1,25 @@
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 function LastPostsPage() {
-	const [isLoading, setIsLoading] = useState(false);
+	/* const [isLoading, setIsLoading] = useState(false); */
 	const [posts, setPosts] = useState(null);
 
+	const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+	const { data, error } = useSWR(
+		'https://jsonplaceholder.typicode.com/posts?_page=1',
+		fetcher
+	);
+
 	useEffect(() => {
+		if (data) {
+			console.log(data);
+			setPosts(data);
+		}
+	}, [data]);
+
+	/* useEffect(() => {
 		setIsLoading(true);
 		fetch('https://jsonplaceholder.typicode.com/posts?_page=1')
 			.then((res) => res.json())
@@ -12,22 +27,24 @@ function LastPostsPage() {
 				setPosts(data);
 				setIsLoading(false);
 			});
-	}, []);
+	}, []); */
 
-	if (isLoading) {
-		return <p>Loading..</p>;
-	}
-
-	if (!posts) {
+	if (error) {
 		return <p>No data fetched</p>;
 	}
 
+	if (!data || !posts) {
+		return <p>Loading..</p>;
+	}
+
 	return (
-		<ul>
-			{posts.map((post) => (
-				<li key={post.id}>{post.title}</li>
-			))}
-		</ul>
+		posts && (
+			<ul>
+				{posts.map((post) => (
+					<li key={post.id}>{post.title}</li>
+				))}
+			</ul>
+		)
 	);
 }
 
